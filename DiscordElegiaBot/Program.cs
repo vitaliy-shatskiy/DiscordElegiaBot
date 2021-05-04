@@ -14,7 +14,6 @@ namespace DiscordElegiaBot
     {
         private DiscordSocketClient _client;
 
-
         public static void Main(string[] args)
         {
             new Program().MainAsync().GetAwaiter().GetResult();
@@ -29,7 +28,6 @@ namespace DiscordElegiaBot
 
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
-
             await Task.Delay(-1);
         }
 
