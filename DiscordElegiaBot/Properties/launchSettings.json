@@ -2,9 +2,6 @@
   "profiles": {
     "DiscordElegiaBot": {
       "commandName": "Project"
-    },
-    "Docker": {
-      "commandName": "Docker"
     }
   }
 }
