@@ -3,11 +3,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 
-namespace DiscordElegiaBot.Services
+namespace DiscordElegiaBot.Providers
 {
-    public class RandomImageHttpRequest
+    public static class RandomImageHttpProvider
     {
-        public static async Task<Image> GetRandomPhoto(string image = "")
+        public static async Task<Image> GetRandomPhotoAsync(string image = "")
         {
             using var client = new HttpClient
             {

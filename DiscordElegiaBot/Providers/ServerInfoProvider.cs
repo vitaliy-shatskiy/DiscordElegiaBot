@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DiscordElegiaBot.DTO.CsGoServerInfo;
+using DiscordElegiaBot.Models.DTO.CsGoServerInfo;
 using Newtonsoft.Json;
 
-namespace DiscordElegiaBot.Services
+namespace DiscordElegiaBot.Providers
 {
-    public class ServerInfoHttpRequest
+    public static class ServerInfoHttpProvider
     {
-        public static async Task<ServerInfoDTO> GetServerInfo(string serverIp)
+        public static async Task<ServerInfoDTO> GetServerInfoAsync(string serverIp)
         {
             using var client = new HttpClient
             {
