@@ -6,4 +6,4 @@ add config.json with
 ```{
     "Token": "your_bot_token",
     "Prefix": ";"
-}```
+}
