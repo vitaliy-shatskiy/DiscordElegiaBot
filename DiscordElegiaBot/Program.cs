@@ -16,12 +16,9 @@ namespace DiscordElegiaBot
 
         private Program()
         {
-            // create the configuration
             var builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("config.json");
-
-            // build the configuration and assign to _config          
             _config = builder.Build();
         }
 
