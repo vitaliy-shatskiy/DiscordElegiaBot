@@ -1,7 +1,7 @@
 # DiscordElegiaBot
 Bot for Elegia discord server
 
-add config.json with
+add config.json to application folder
 
 ```
 {
