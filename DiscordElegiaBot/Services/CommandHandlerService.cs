@@ -23,10 +23,7 @@ namespace DiscordElegiaBot.Services
             _commands = services.GetRequiredService<CommandService>();
             _client = services.GetRequiredService<DiscordSocketClient>();
             _services = services;
-
             _commands.CommandExecuted += CommandExecutedAsync;
-
-            // take action when we receive a message (so we can process it, and see if it is a valid command)
             _client.MessageReceived += MessageReceivedAsync;
         }
 
@@ -35,24 +32,21 @@ namespace DiscordElegiaBot.Services
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
-        public async Task MessageReceivedAsync(SocketMessage rawMessage)
+        private async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            // ensures we don't process system/other bot messages
-            if (rawMessage is not SocketUserMessage message) return;
-
-            if (message.Source != MessageSource.User) return;
-
+            if (rawMessage is not SocketUserMessage {Source: MessageSource.User} message)
+                return;
             var argumentPosition = 0;
             var prefix = char.Parse(_config["Prefix"]);
             if (!(message.HasMentionPrefix(_client.CurrentUser, ref argumentPosition) ||
                   message.HasCharPrefix(prefix, ref argumentPosition)))
                 return;
-
             var context = new SocketCommandContext(_client, message);
             await _commands.ExecuteAsync(context, argumentPosition, _services);
         }
 
-        public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
+        private static async Task CommandExecutedAsync(
+            Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             if (!command.IsSpecified)
             {
