@@ -105,14 +105,7 @@ namespace DiscordElegiaBot.Modules
                     }
                 }
             }
-
-            embed.AddField(builder =>
-            {
-                builder.Name = "nigga";
-                builder.Value = "black";
-                builder.IsInline = true;
-                builder.Build();
-            });
+            
             embed.Description = sb.ToString();
             await ReplyAsync(null, false, embed.Build());
         }
