@@ -40,35 +40,37 @@ namespace DiscordElegiaBot.Modules
             try
             {
                 var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoAwpIp);
-                serverInfo.PlayersList.RemoveAt(0);
-                if (string.IsNullOrWhiteSpace(serverInfo.PlayersList[0].NickName ?? "x"))
-                    serverInfo.PlayersList.RemoveAt(0);
-
                 var sb = new StringBuilder();
-
-                sb.Append("```╔════════╤════╤══════════════════════════╗\n");
-                sb.Append($"║{"Время",-8}│{"Очки",-4}│{"Игрок",-26}║\n");
-                sb.Append("╠════════╪════╪══════════════════════════╝\n");
-                if (serverInfo.PlayersList.Count != 0)
+                if (serverInfo.PlayersCount != 0)
                 {
-                    for (var i = 0; i < serverInfo.PlayersList.Count; i++)
+                    serverInfo.PlayersList.RemoveAt(0);
+                    if (string.IsNullOrWhiteSpace(serverInfo.PlayersList[0].NickName))
+                        serverInfo.PlayersList.RemoveAt(0);
+
+
+                    sb.Append("```╔════════╤════╤══════════════════════════╗\n");
+                    sb.Append($"║{"Время",-8}│{"Очки",-4}│{"Игрок",-26}║\n");
+                    sb.Append("╠════════╪════╪══════════════════════════╝\n");
+                    if (serverInfo.PlayersList.Count != 0)
                     {
-                        var player = serverInfo.PlayersList[i];
-                        sb.Append($"║{player.PlayingTime,-8}│{player.Frags,-4}│{player.NickName}\n");
-                        if (i < serverInfo.PlayersList.Count - 1)
-                            sb.Append("╟────────┼────┼──────────────────────────╢\n");
+                        for (var i = 0; i < serverInfo.PlayersList.Count; i++)
+                        {
+                            var player = serverInfo.PlayersList[i];
+                            sb.Append($"║{player.PlayingTime,-8}│{player.Frags,-4}│{player.NickName}\n");
+                            if (i < serverInfo.PlayersList.Count - 1)
+                                sb.Append("╟────────┼────┼──────────────────────────╢\n");
+                        }
+
+                        sb.Append("╚════════╧════╧══════════════════════════╝");
                     }
-
-                    sb.Append("╚════════╧════╧══════════════════════════╝");
                 }
-
 
                 sb.Append("```");
                 var embed = new EmbedBuilder
                 {
                     Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 2) + " tick" +
                             $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",37}",
-                    Color = Color.Gold,
+                    Color = Color.Default,
                     Description = sb.ToString()
                 };
                 await ReplyAsync(null, false, embed.Build());

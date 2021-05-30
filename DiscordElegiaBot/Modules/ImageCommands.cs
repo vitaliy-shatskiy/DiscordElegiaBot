@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using DiscordElegiaBot.Providers;
 
@@ -8,13 +9,15 @@ namespace DiscordElegiaBot.Modules
     {
         [Command("image")]
         [Alias("картинка", "picture", "photo")]
-        public async Task RandomPicture([Remainder] string args = null)
+        public async Task RandomPicture([Remainder] string args = " ")
         {
             try
             {
-                var image = args == null
-                    ? await RandomImageHttpProvider.GetRandomPhotoAsync(args)
-                    : await RandomImageHttpProvider.GetRandomPhotoAsync();
+                Image image;
+                if (args != " ")
+                    image = await RandomImageHttpProvider.GetRandomPhotoAsync(args);
+                else
+                    image = await RandomImageHttpProvider.GetRandomPhotoAsync();
                 await Context.Channel.SendFileAsync(image.Stream, "randomPhoto.jpg");
             }
             catch

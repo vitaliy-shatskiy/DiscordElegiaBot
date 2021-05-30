@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -10,6 +11,164 @@ namespace DiscordElegiaBot.Modules
 {
     public class DefaultCommands : ModuleBase
     {
+        [Command("colors")]
+        public async Task Colors()
+        {
+            var color = Color.Blue;
+            var embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Default;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Gold;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Green;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Magenta;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Orange;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Purple;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Red;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.Teal;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.DarkBlue;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+
+            color = Color.DarkerGrey;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.DarkMagenta;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.DarkOrange;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.DarkPurple;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.DarkRed;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.DarkTeal;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.LighterGrey;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.LightGrey;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+            Thread.Sleep(1000);
+            color = Color.LightOrange;
+            embed = new EmbedBuilder
+            {
+                Color = color,
+                Description = color.ToString()
+            };
+            await ReplyAsync(null, false, embed.Build());
+        }
+
+
         [Command("help")]
         [Alias("хелп", "помощь", "?", "info", "инфо")]
         public async Task Help()
@@ -71,7 +230,12 @@ namespace DiscordElegiaBot.Modules
         {
             var sb = new StringBuilder();
             var embed = new EmbedBuilder();
-            var replies = new List<string> {"да", "нет", "возможно"};
+            var replies = new List<string>
+            {
+                "да", "очень вероятно", "нет", "непонятно", "мало шансов", "шансы высокие", "точно да",
+                "духи говорят да", "спросите снова", "возможно", "думаю нет", "не могу сказать", "без сомнений",
+                "неясно", "точно нет", "духи говорят нет", "думаю да"
+            };
             embed.WithColor(new Color(0, 255, 0));
             embed.Title = "Я великий МАГИЧЕСКИЙ ШАР";
             sb.AppendLine($"{Context.User.Username},");
@@ -82,30 +246,39 @@ namespace DiscordElegiaBot.Modules
             }
             else
             {
-                var answer = replies[new Random().Next(replies.Count - 1)];
+                var answer = replies[new Random().Next(replies.Count)];
                 sb.AppendLine($"Ты спросил: [**{args}**]...");
                 sb.AppendLine();
                 sb.AppendLine($".... ответ: [**{answer}!**]");
                 switch (answer)
                 {
                     case "да":
+                    case "очень вероятно":
+                    case "точно да":
+                    case "духи говорят да":
+                    case "без сомнений":
+                    case "думаю да":
                     {
                         embed.WithColor(new Color(0, 255, 0));
                         break;
                     }
                     case "нет":
+                    case "мало шансов":
+                    case "духи говорят нет":
+                    case "точно нет":
+                    case "думаю нет":
                     {
                         embed.WithColor(new Color(255, 0, 0));
                         break;
                     }
-                    case "возможно":
+                    default:
                     {
                         embed.WithColor(new Color(255, 255, 0));
                         break;
                     }
                 }
             }
-            
+
             embed.Description = sb.ToString();
             await ReplyAsync(null, false, embed.Build());
         }
