@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -40,14 +41,17 @@ namespace DiscordElegiaBot.Modules
             try
             {
                 var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoAwpIp);
+                if (serverInfo.PlayersCount == 0)
+                {
+                    throw new Exception();
+                }
+
                 var sb = new StringBuilder();
                 if (serverInfo.PlayersCount != 0)
                 {
                     serverInfo.PlayersList.RemoveAt(0);
                     if (string.IsNullOrWhiteSpace(serverInfo.PlayersList[0].NickName))
                         serverInfo.PlayersList.RemoveAt(0);
-
-
                     sb.Append("```╔════════╤════╤══════════════════════════╗\n");
                     sb.Append($"║{"Время",-8}│{"Очки",-4}│{"Игрок",-26}║\n");
                     sb.Append("╠════════╪════╪══════════════════════════╝\n");
@@ -68,7 +72,7 @@ namespace DiscordElegiaBot.Modules
                 sb.Append("```");
                 var embed = new EmbedBuilder
                 {
-                    Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 2) + " tick" +
+                    Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 5) +
                             $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",37}",
                     Color = Color.Default,
                     Description = sb.ToString()
@@ -77,7 +81,7 @@ namespace DiscordElegiaBot.Modules
             }
             catch
             {
-                await ReplyAsync($"AWP {Settings.CsGoAwpIp} не отвечает.");
+                await ReplyAsync($"AWP {Settings.CsGoAwpIp} не отвечает или на сервере нет игроков...");
             }
         }
 
@@ -89,6 +93,11 @@ namespace DiscordElegiaBot.Modules
             try
             {
                 var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoMirageIp);
+                if (serverInfo.PlayersCount == 0)
+                {
+                    throw new Exception();
+                }
+
                 serverInfo.PlayersList.RemoveAt(0);
                 if (string.IsNullOrWhiteSpace(serverInfo.PlayersList[0].NickName ?? "x"))
                     serverInfo.PlayersList.RemoveAt(0);
@@ -114,7 +123,7 @@ namespace DiscordElegiaBot.Modules
                 var embed = new EmbedBuilder
                 {
                     Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 2) +
-                            $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",37}",
+                            $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",44}",
                     Color = Color.DarkPurple,
                     Description = sb.ToString()
                 };
@@ -122,7 +131,7 @@ namespace DiscordElegiaBot.Modules
             }
             catch
             {
-                await ReplyAsync($"Mirage {Settings.CsGoMirageIp} не отвечает.");
+                await ReplyAsync($"Mirage {Settings.CsGoMirageIp} не отвечает или на сервере нет игроков...");
             }
         }
     }
