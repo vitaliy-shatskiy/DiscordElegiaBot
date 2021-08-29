@@ -21,8 +21,8 @@ namespace DiscordElegiaBot.Modules
             sb.AppendLine("**`ip`** - ip всех серверов Elegia. _(айпи, ип, сервера, servers)_\n");
             sb.AppendLine("**`site`** - сайт Elegia. _(сайт)_\n");
             sb.AppendLine(
-                "**`awp`** - текущий список игроков на сервере \"Your imagination | AWP ONLY\". _(2, авп, a, а)_\n");
-            sb.AppendLine("**`mirage`** - текущий список игроков на сервере \"Mirage Only\". _(1, мираж, м, m)_\n");
+                "**`public`** - текущий список игроков на сервере \"PUBLIC | ELEGIA.CLUB\". _(2, pub)_\n");
+            sb.AppendLine("**`mirage`** - текущий список игроков на сервере \"MIRAGE | ELEGIA.CLUB\". _(1, мираж)_\n");
             sb.AppendLine("**`hello`** - поприветствовать бота. _(hi, привет, здравствуй, ку)_\n");
             sb.AppendLine("**`goodbye`** - попрощаться с ботом. _(пока, бб, сладких снов, bb)_\n");
             sb.AppendLine(
