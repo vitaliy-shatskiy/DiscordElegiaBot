@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using DiscordElegiaBot.Models;
+using DiscordElegiaBot.Models.DTO.CsGoServerInfo;
 using DiscordElegiaBot.Providers;
 
 namespace DiscordElegiaBot.Modules
@@ -24,70 +25,40 @@ namespace DiscordElegiaBot.Modules
         public async Task ServersIp()
         {
             await ReplyAsync(
-                $"```css\nСервера:\nMirage Only: {Settings.CsGoMirageIp}\nAWP Only: {Settings.CsGoAwpIp}\n```");
+                $"```css\nСервера Elegia:\nMirage: {Settings.CsGoMirageIp}\nPublic: {Settings.CsGoPublic}\n```");
         }
 
         [Command("site")]
         [Alias("сайт")]
         public async Task ServerSite()
         {
-            await ReplyAsync("Сайт сервера: https://elegia-project.su/");
+            await ReplyAsync("Сайт сервера: https://elegia.club/");
         }
 
-        [Command("awp")]
-        [Alias("2", "авп", "a", "а")]
-        public async Task ServerAwpInfo()
+        [Command("public")]
+        [Alias("2", "pub")]
+        public async Task ServerPublicInfo()
         {
             try
             {
-                var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoAwpIp);
+                var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoPublic);
                 if (serverInfo.PlayersCount == 0)
                 {
-                    throw new Exception();
+                    await ReplyAsync($"На Public {Settings.CsGoPublic} нет игроков :(");
+                    return;
                 }
 
-                var sb = new StringBuilder();
-                if (serverInfo.PlayersCount != 0)
-                {
-                    serverInfo.PlayersList.RemoveAt(0);
-                    if (string.IsNullOrWhiteSpace(serverInfo.PlayersList[0].NickName))
-                        serverInfo.PlayersList.RemoveAt(0);
-                    sb.Append("```╔════════╤════╤══════════════════════════╗\n");
-                    sb.Append($"║{"Время",-8}│{"Очки",-4}│{"Игрок",-26}║\n");
-                    sb.Append("╠════════╪════╪══════════════════════════╝\n");
-                    if (serverInfo.PlayersList.Count != 0)
-                    {
-                        for (var i = 0; i < serverInfo.PlayersList.Count; i++)
-                        {
-                            var player = serverInfo.PlayersList[i];
-                            sb.Append($"║{player.PlayingTime,-8}│{player.Frags,-4}│{player.NickName}\n");
-                            if (i < serverInfo.PlayersList.Count - 1)
-                                sb.Append("╟────────┼────┼──────────────────────────╢\n");
-                        }
-
-                        sb.Append("╚════════╧════╧══════════════════════════╝");
-                    }
-                }
-
-                sb.Append("```");
-                var embed = new EmbedBuilder
-                {
-                    Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 5) +
-                            $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",37}",
-                    Color = Color.Default,
-                    Description = sb.ToString()
-                };
-                await ReplyAsync(null, false, embed.Build());
+                serverInfo.PlayersList.RemoveAt(0);
+                await ReplyAsync(null, false, GetServerMessageBodyEmbedBuilder(serverInfo, Color.DarkPurple));
             }
             catch
             {
-                await ReplyAsync($"AWP {Settings.CsGoAwpIp} не отвечает или на сервере нет игроков...");
+                await ReplyAsync($"Public {Settings.CsGoPublic} не отвечает...");
             }
         }
 
-
         [Command("mirage")]
-        [Alias("1", "мираж", "м", "m")]
+        [Alias("1", "мираж")]
         public async Task ServerMirageInfo()
         {
             try
@@ -95,44 +66,43 @@ namespace DiscordElegiaBot.Modules
                 var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoMirageIp);
                 if (serverInfo.PlayersCount == 0)
                 {
-                    throw new Exception();
+                    await ReplyAsync($"На Mirage {Settings.CsGoMirageIp} нет игроков :(");
+                    return;
                 }
 
                 serverInfo.PlayersList.RemoveAt(0);
-                if (string.IsNullOrWhiteSpace(serverInfo.PlayersList[0].NickName ?? "x"))
-                    serverInfo.PlayersList.RemoveAt(0);
-                var sb = new StringBuilder();
-                sb.Append("```");
-                sb.Append("╔════════╤═════╤═══════════════════════════╗\n");
-                sb.Append($"║{"Время",-8}│{"Фраги",-5}│{"Игрок",-26} ║\n");
-                sb.Append("╠════════╪═════╪═══════════════════════════╝\n");
-                if (serverInfo.PlayersList.Count != 0)
-                {
-                    for (var i = 0; i < serverInfo.PlayersList.Count; i++)
-                    {
-                        var player = serverInfo.PlayersList[i];
-                        sb.Append($"║{player.PlayingTime,-8}│{player.Frags,-5}│{player.NickName}\n");
-                        if (i < serverInfo.PlayersList.Count - 1)
-                            sb.Append("╟────────┼─────┼───────────────────────────╢\n");
-                    }
-
-                    sb.Append("╚════════╧═════╧═══════════════════════════╝");
-                }
-
-                sb.Append("```");
-                var embed = new EmbedBuilder
-                {
-                    Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 2) +
-                            $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",44}",
-                    Color = Color.DarkPurple,
-                    Description = sb.ToString()
-                };
-                await ReplyAsync(null, false, embed.Build());
+                await ReplyAsync(null, false, GetServerMessageBodyEmbedBuilder(serverInfo, Color.DarkOrange));
             }
             catch
             {
-                await ReplyAsync($"Mirage {Settings.CsGoMirageIp} не отвечает или на сервере нет игроков...");
+                await ReplyAsync($"Mirage {Settings.CsGoMirageIp} не отвечает...");
             }
+        }
+
+        private Embed GetServerMessageBodyEmbedBuilder(ServerInfoDTO serverInfo, Color leftLineColor)
+        {
+            var sb = new StringBuilder();
+            sb.Append("```");
+            sb.Append("╔════════╤═════╤═══════════════════════════╗\n");
+            sb.Append($"║{"Время",-8}│{"Очки",-5}│{"Игрок",-26} ║\n");
+            sb.Append("╠════════╪═════╪═══════════════════════════╝\n");
+            for (var i = 0; i < serverInfo.PlayersCount; i++)
+            {
+                var player = serverInfo.PlayersList[i];
+                sb.Append($"║{player.PlayingTime,-8}│{player.Frags,-5}│{player.NickName}\n");
+                if (i < serverInfo.PlayersCount - 1)
+                    sb.Append("╟────────┼─────┼───────────────────────────╢\n");
+            }
+
+            sb.Append("╚════════╧═════╧═══════════════════════════╝");
+            sb.Append("```");
+            return new EmbedBuilder
+            {
+                Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 2) +
+                        $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",44}",
+                Color = leftLineColor,
+                Description = sb.ToString()
+            }.Build();
         }
     }
 }
