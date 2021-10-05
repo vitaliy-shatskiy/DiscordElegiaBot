@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordElegiaBot.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DiscordElegiaBot.Services
 {
@@ -15,6 +15,7 @@ namespace DiscordElegiaBot.Services
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
         private readonly IConfiguration _config;
+        private readonly ILogger _logger;
         private readonly IServiceProvider _services;
 
         public CommandHandlerService(IServiceProvider services)
@@ -22,7 +23,9 @@ namespace DiscordElegiaBot.Services
             _config = services.GetRequiredService<IConfiguration>();
             _commands = services.GetRequiredService<CommandService>();
             _client = services.GetRequiredService<DiscordSocketClient>();
+            _logger = services.GetRequiredService<ILogger<CommandHandlerService>>();
             _services = services;
+
             _commands.CommandExecuted += CommandExecutedAsync;
             _client.MessageReceived += MessageReceivedAsync;
         }
@@ -32,36 +35,43 @@ namespace DiscordElegiaBot.Services
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
+        // Message receiver
         private async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            if (rawMessage is not SocketUserMessage {Source: MessageSource.User} message)
-                return;
-            var argumentPosition = 0;
+            if (rawMessage is not SocketUserMessage message) return;
+
+            if (message.Source != MessageSource.User) return;
+
+            var argPos = 0;
             var prefix = char.Parse(_config["Prefix"]);
-            if (!(message.HasMentionPrefix(_client.CurrentUser, ref argumentPosition) ||
-                  message.HasCharPrefix(prefix, ref argumentPosition)))
+
+            if (!(message.HasMentionPrefix(_client.CurrentUser, ref argPos) ||
+                  message.HasCharPrefix(prefix, ref argPos)))
                 return;
+
             var context = new SocketCommandContext(_client, message);
-            await _commands.ExecuteAsync(context, argumentPosition, _services);
+
+            await _commands.ExecuteAsync(context, argPos, _services);
         }
 
-        private static async Task CommandExecutedAsync(
-            Optional<CommandInfo> command, ICommandContext context, IResult result)
+        private async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             if (!command.IsSpecified)
             {
-                Console.WriteLine($"Команда с ошибкой у [{context.User.GetNameWithId()}] - [{result.ErrorReason}]!");
+                _logger.LogError(
+                    $"Command failed to execute for [{context.User.Username}] <-> [{result.ErrorReason}]!");
                 return;
             }
 
             if (result.IsSuccess)
             {
-                Console.WriteLine($"Команда [{command.Value.Name}] выполнена для -> [{context.User.GetNameWithId()}]");
+                _logger.LogInformation(
+                    $"Command [{command.Value.Name}] executed for [{context.User.Username}] on [{context.Guild.Name}]");
                 return;
             }
 
             await context.Channel.SendMessageAsync(
-                $"Упс, {context.User.Mention}... что-то пошло не так -> [{result}]!");
+                $"Sorry, {context.User.Username}... something went wrong -> [{result}]!");
         }
     }
 }

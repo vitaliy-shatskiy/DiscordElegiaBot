@@ -1,20 +1,33 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DiscordElegiaBot.Models;
+using DiscordElegiaBot.Models.Configurations;
 using DiscordElegiaBot.Models.DTO.CsGoServerInfo;
+using FluentFTP;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace DiscordElegiaBot.Providers
 {
-    public static class ServerInfoHttpProvider
+    public class ServerInfoProvider
     {
-        public static async Task<ServerInfoDTO> GetServerInfoAsync(string serverIp)
+        private readonly Config _config;
+
+        public ServerInfoProvider(IServiceProvider serviceProvider)
+        {
+            _config = new Config();
+            serviceProvider.GetRequiredService<IConfiguration>().Bind(_config);
+        }
+
+        public async Task<ServerInfoDTO> GetServerInfoAsync(string serverIp)
         {
             using var client = new HttpClient
             {
-                BaseAddress = new Uri(Settings.ServerSiteUrl)
+                BaseAddress = new Uri(_config.ServerSiteUrl)
             };
             var content = new FormUrlEncodedContent(new[]
             {
@@ -26,6 +39,36 @@ namespace DiscordElegiaBot.Providers
             var resultContent = await result.Content.ReadAsStringAsync();
             resultContent = resultContent.Remove(0, 1).Remove(resultContent.Length - 2, 1);
             return JsonConvert.DeserializeObject<ServerInfoDTO>(resultContent);
+        }
+
+        public async Task<ICollection<FtpListItem>> GetMirageDemos()
+        {
+            using var client = new FtpClient
+            {
+                Host = _config.Mirage.FtpHost,
+                Credentials = new NetworkCredential(_config.Mirage.FtpUser, _config.Mirage.FtpPass)
+            };
+            try
+            {
+                await client.ConnectAsync();
+                if (!client.IsConnected) throw new Exception("Mirage FTP connect failure");
+
+                var list = await client.GetListingAsync();
+                return list.Where(item => item.Name.Contains(".dem"))
+                    .OrderByDescending(item => item.Modified)
+                    .Take(10)
+                    .ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            finally
+            {
+                await client.DisconnectAsync();
+                if (!client.IsDisposed) client.Dispose();
+            }
         }
     }
 }

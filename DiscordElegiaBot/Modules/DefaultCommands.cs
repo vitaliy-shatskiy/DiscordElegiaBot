@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -11,7 +10,6 @@ namespace DiscordElegiaBot.Modules
 {
     public class DefaultCommands : ModuleBase
     {
-
         [Command("help")]
         [Alias("хелп", "помощь", "?", "info", "инфо")]
         public async Task Help()
@@ -24,6 +22,7 @@ namespace DiscordElegiaBot.Modules
                 "**`public`** - текущий список игроков на сервере \"PUBLIC | ELEGIA.CLUB\". _(2, pub)_\n");
             sb.AppendLine("**`mirage`** - текущий список игроков на сервере \"MIRAGE | ELEGIA.CLUB\". _(1, мираж)_\n");
             sb.AppendLine("**`hello`** - поприветствовать бота. _(hi, привет, здравствуй, ку)_\n");
+            sb.AppendLine("**`demos`** - показать последние демки. _(dem, дем, демо, демка, demo, демки)_\n");
             sb.AppendLine("**`goodbye`** - попрощаться с ботом. _(пока, бб, сладких снов, bb)_\n");
             sb.AppendLine(
                 "**`ask`** - магический шар-предсказать, задайте вопрос шару и он ответит вам *правду*! " +

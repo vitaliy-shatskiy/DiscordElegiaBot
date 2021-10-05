@@ -3,20 +3,33 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using DiscordElegiaBot.Models;
+using DiscordElegiaBot.Models.Configurations;
 using DiscordElegiaBot.Models.DTO.CsGoServerInfo;
 using DiscordElegiaBot.Providers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordElegiaBot.Modules
 {
     public class ServersCommands : ModuleBase
     {
+        private readonly Config _config;
+        private readonly ServerInfoProvider _serverInfoProvider;
+
+        public ServersCommands(IServiceProvider services)
+        {
+            _config = new Config();
+            services.GetRequiredService<IConfiguration>().Bind(_config);
+            _serverInfoProvider = services.GetRequiredService<ServerInfoProvider>();
+        }
+
         [Command("null")]
         public async Task CommandZ()
         {
             var sb = new StringBuilder();
-            var mydakoff = Context.Client.GetUserAsync(245938852668112897).Result.Mention;
-            sb.AppendLine($"Бот сделан из говна и палок под пиво \"*Жигулевское*\" вот этим дебилом -> [{mydakoff}]");
+            var user = await Context.Client.GetUserAsync(245938852668112897);
+            sb.AppendLine(
+                $"Бот сделан из говна и палок под пиво \"*Жигулевское*\" вот этим дебилом -> [{user.Mention}]");
             await ReplyAsync(sb.ToString());
         }
 
@@ -25,14 +38,14 @@ namespace DiscordElegiaBot.Modules
         public async Task ServersIp()
         {
             await ReplyAsync(
-                $"```css\nСервера Elegia:\nMirage: {Settings.CsGoMirageIp}\nPublic: {Settings.CsGoPublic}\n```");
+                $"```css\nСервера Elegia:\nMirage: {_config.Mirage.Ip}\nPublic: {_config.Public.Ip}\n```");
         }
 
         [Command("site")]
         [Alias("сайт")]
         public async Task ServerSite()
         {
-            await ReplyAsync("Сайт сервера: https://elegia.club/");
+            await ReplyAsync($"Сайт сервера: {_config.ServerSiteUrl}");
         }
 
         [Command("public")]
@@ -41,10 +54,10 @@ namespace DiscordElegiaBot.Modules
         {
             try
             {
-                var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoPublic);
+                var serverInfo = await _serverInfoProvider.GetServerInfoAsync(_config.Public.Ip);
                 if (serverInfo.PlayersCount == 0)
                 {
-                    await ReplyAsync($"На Public {Settings.CsGoPublic} нет игроков :(");
+                    await ReplyAsync($"На Public {_config.Public.Ip} нет игроков :(");
                     return;
                 }
 
@@ -53,7 +66,7 @@ namespace DiscordElegiaBot.Modules
             }
             catch
             {
-                await ReplyAsync($"Public {Settings.CsGoPublic} не отвечает...");
+                await ReplyAsync($"Public {_config.Public.Ip} не отвечает...");
             }
         }
 
@@ -63,10 +76,10 @@ namespace DiscordElegiaBot.Modules
         {
             try
             {
-                var serverInfo = await ServerInfoHttpProvider.GetServerInfoAsync(Settings.CsGoMirageIp);
+                var serverInfo = await _serverInfoProvider.GetServerInfoAsync(_config.Mirage.Ip);
                 if (serverInfo.PlayersCount == 0)
                 {
-                    await ReplyAsync($"На Mirage {Settings.CsGoMirageIp} нет игроков :(");
+                    await ReplyAsync($"На Mirage {_config.Mirage.Ip} нет игроков :(");
                     return;
                 }
 
@@ -75,11 +88,35 @@ namespace DiscordElegiaBot.Modules
             }
             catch
             {
-                await ReplyAsync($"Mirage {Settings.CsGoMirageIp} не отвечает...");
+                await ReplyAsync($"Mirage {_config.Mirage.Ip} не отвечает...");
             }
         }
 
-        private Embed GetServerMessageBodyEmbedBuilder(ServerInfoDTO serverInfo, Color leftLineColor)
+        [Command("demos")]
+        [Alias("dem", "дем", "демо", "демка", "demo", "демки")]
+        public async Task GetMirageDemosInfo()
+        {
+            try
+            {
+                var demos = await _serverInfoProvider.GetMirageDemos();
+                var embed = new EmbedBuilder
+                {
+                    Title = "Демки Mirage Only",
+                    Color = Color.Red
+                };
+                foreach (var demo in demos)
+                    embed.AddField($"Дата       {demo.Modified.ToLocalTime()}",
+                        $"[Скачать](http://{_config.Mirage.FtpHost}/{_config.Mirage.FtpUser}/{demo.Name}) {demo.Size / 1024 / 1024} MB");
+
+                await ReplyAsync(null, false, embed.Build());
+            }
+            catch
+            {
+                await ReplyAsync("Не удалось загрузить демки");
+            }
+        }
+
+        private static Embed GetServerMessageBodyEmbedBuilder(ServerInfoDTO serverInfo, Color leftLineColor)
         {
             var sb = new StringBuilder();
             sb.Append("```");
