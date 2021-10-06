@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace DiscordElegiaBot.Services
+namespace DiscordElegiaBot.Services.Core
 {
     public class LoggingService
     {
@@ -19,7 +19,6 @@ namespace DiscordElegiaBot.Services
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _commands = services.GetRequiredService<CommandService>();
             _logger = services.GetRequiredService<ILogger<LoggingService>>();
-
 
             _discord.Ready += OnReadyAsync;
             _discord.Log += OnLogAsync;

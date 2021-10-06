@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace DiscordElegiaBot.Models.DTO.CsGoServerInfo
+namespace DiscordElegiaBot.Common.Models.DTO.CsGoServerInfo
 {
-    public class ServerInfoDTO
+    public class ServerInfoDto
     {
-        [JsonProperty("players")] public List<ServerPlayerDTO> PlayersList { get; set; }
+        [JsonProperty("players")] public List<ServerPlayerDto> PlayersList { get; set; }
 
         [JsonProperty("ip")] public string Ip { get; set; }
 

@@ -1,16 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Discord.Net" Version="2.4.0"/>
-        <PackageReference Include="Discord.Net.Commands" Version="2.4.0"/>
         <PackageReference Include="EntityFrameworkCore.Exceptions.MySQL.Pomelo" Version="3.1.4"/>
-        <PackageReference Include="FluentFTP" Version="35.0.5"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0"/>
@@ -24,10 +19,6 @@
         <PackageReference Include="Serilog.Exceptions.EntityFrameworkCore" Version="7.1.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0"/>
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\DiscordElegiaBot.BLL\DiscordElegiaBot.BLL.csproj"/>
     </ItemGroup>
 
 </Project>

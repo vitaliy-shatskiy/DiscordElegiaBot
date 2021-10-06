@@ -4,26 +4,25 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DiscordElegiaBot.Models.Configurations;
-using DiscordElegiaBot.Models.DTO.CsGoServerInfo;
+using DiscordElegiaBot.Common.Models.Configurations;
+using DiscordElegiaBot.Common.Models.DTO.CsGoServerInfo;
 using FluentFTP;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace DiscordElegiaBot.Providers
+namespace DiscordElegiaBot.BLL.Providers
 {
     public class ServerInfoProvider
     {
         private readonly Config _config;
 
-        public ServerInfoProvider(IServiceProvider serviceProvider)
+        public ServerInfoProvider(IConfiguration configuration)
         {
             _config = new Config();
-            serviceProvider.GetRequiredService<IConfiguration>().Bind(_config);
+            configuration.Bind(_config);
         }
 
-        public async Task<ServerInfoDTO> GetServerInfoAsync(string serverIp)
+        public async Task<ServerInfoDto> GetServerInfoAsync(string serverIp)
         {
             using var client = new HttpClient
             {
@@ -38,7 +37,7 @@ namespace DiscordElegiaBot.Providers
                     content);
             var resultContent = await result.Content.ReadAsStringAsync();
             resultContent = resultContent.Remove(0, 1).Remove(resultContent.Length - 2, 1);
-            return JsonConvert.DeserializeObject<ServerInfoDTO>(resultContent);
+            return JsonConvert.DeserializeObject<ServerInfoDto>(resultContent);
         }
 
         public async Task<ICollection<FtpListItem>> GetMirageDemos()
