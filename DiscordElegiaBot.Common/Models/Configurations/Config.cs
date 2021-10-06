@@ -1,4 +1,4 @@
-namespace DiscordElegiaBot.Models.Configurations
+namespace DiscordElegiaBot.Common.Models.Configurations
 {
     public class Config
     {

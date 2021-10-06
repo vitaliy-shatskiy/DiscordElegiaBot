@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace DiscordElegiaBot.Models.DTO.CsGoServerInfo
+namespace DiscordElegiaBot.Common.Models.DTO.CsGoServerInfo
 {
-    public class ServerPlayerDTO
+    public class ServerPlayerDto
     {
         [JsonProperty("Name")] public string NickName { get; set; }
 

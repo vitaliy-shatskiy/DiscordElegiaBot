@@ -1,6 +1,6 @@
 using Discord;
 
-namespace DiscordElegiaBot.Extensions
+namespace DiscordElegiaBot.Common.Extensions
 {
     public static class UserExtension
     {

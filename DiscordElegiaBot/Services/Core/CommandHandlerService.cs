@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace DiscordElegiaBot.Services
+namespace DiscordElegiaBot.Services.Core
 {
     public class CommandHandlerService
     {

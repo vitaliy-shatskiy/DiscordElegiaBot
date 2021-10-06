@@ -1,13 +1,13 @@
-using System;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using DiscordElegiaBot.Models.Configurations;
-using DiscordElegiaBot.Models.DTO.CsGoServerInfo;
-using DiscordElegiaBot.Providers;
+using DiscordElegiaBot.BLL.Providers;
+using DiscordElegiaBot.BLL.Services.Abstract;
+using DiscordElegiaBot.Common.Models.Configurations;
+using DiscordElegiaBot.Common.Models.DTO.CsGoServerInfo;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordElegiaBot.Modules
 {
@@ -16,11 +16,12 @@ namespace DiscordElegiaBot.Modules
         private readonly Config _config;
         private readonly ServerInfoProvider _serverInfoProvider;
 
-        public ServersCommands(IServiceProvider services)
+        public ServersCommands(ServerInfoProvider serverInfoProvider, IConfiguration configuration,
+            IUserService userService)
         {
+            _serverInfoProvider = serverInfoProvider;
             _config = new Config();
-            services.GetRequiredService<IConfiguration>().Bind(_config);
-            _serverInfoProvider = services.GetRequiredService<ServerInfoProvider>();
+            configuration.Bind(_config);
         }
 
         [Command("null")]
@@ -105,8 +106,8 @@ namespace DiscordElegiaBot.Modules
                     Color = Color.Red
                 };
                 foreach (var demo in demos)
-                    embed.AddField($"Дата       {demo.Modified.ToLocalTime()}",
-                        $"[Скачать](http://{_config.Mirage.FtpHost}/{_config.Mirage.FtpUser}/{demo.Name}) {demo.Size / 1024 / 1024} MB");
+                    embed.AddField($"Дата       {demo.Modified.ToLocalTime().ToString(CultureInfo.InvariantCulture)}",
+                        $"[Скачать](http://{_config.Mirage.FtpHost}/{_config.Mirage.FtpUser}/{demo.Name}) {(demo.Size / 1024 / 1024).ToString()} MB");
 
                 await ReplyAsync(null, false, embed.Build());
             }
@@ -116,7 +117,7 @@ namespace DiscordElegiaBot.Modules
             }
         }
 
-        private static Embed GetServerMessageBodyEmbedBuilder(ServerInfoDTO serverInfo, Color leftLineColor)
+        private static Embed GetServerMessageBodyEmbedBuilder(ServerInfoDto serverInfo, Color leftLineColor)
         {
             var sb = new StringBuilder();
             sb.Append("```");
@@ -126,7 +127,7 @@ namespace DiscordElegiaBot.Modules
             for (var i = 0; i < serverInfo.PlayersCount; i++)
             {
                 var player = serverInfo.PlayersList[i];
-                sb.Append($"║{player.PlayingTime,-8}│{player.Frags,-5}│{player.NickName}\n");
+                sb.Append($"║{player.PlayingTime,-8}│{player.Frags.ToString(),-5}│{player.NickName}\n");
                 if (i < serverInfo.PlayersCount - 1)
                     sb.Append("╟────────┼─────┼───────────────────────────╢\n");
             }
@@ -135,8 +136,8 @@ namespace DiscordElegiaBot.Modules
             sb.Append("```");
             return new EmbedBuilder
             {
-                Title = serverInfo.HostName.Remove(serverInfo.HostName.Length - 2) +
-                        $"\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount}/{serverInfo.MaxPlayers}",44}",
+                Title =
+                    $"{serverInfo.HostName.Remove(serverInfo.HostName.Length - 2)}\n{serverInfo.Ip,-20}{$"Игроков: {serverInfo.PlayersCount.ToString()}/{serverInfo.MaxPlayers.ToString()}",44}",
                 Color = leftLineColor,
                 Description = sb.ToString()
             }.Build();

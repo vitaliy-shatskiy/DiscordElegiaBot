@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 
-namespace DiscordElegiaBot.Providers
+namespace DiscordElegiaBot.BLL.Providers
 {
     public class RandomImageProvider
     {
