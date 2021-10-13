@@ -1,9 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using DiscordElegiaBot.Providers;
-using Microsoft.Extensions.DependencyInjection;
+using DiscordElegiaBot.BLL.Providers;
 
 namespace DiscordElegiaBot.Modules
 {
@@ -11,9 +9,9 @@ namespace DiscordElegiaBot.Modules
     {
         private readonly RandomImageProvider _randomImageProvider;
 
-        public ImageCommands(IServiceProvider services)
+        public ImageCommands(RandomImageProvider randomImageProvider)
         {
-            _randomImageProvider = services.GetRequiredService<RandomImageProvider>();
+            _randomImageProvider = randomImageProvider;
         }
 
         [Command("image")]

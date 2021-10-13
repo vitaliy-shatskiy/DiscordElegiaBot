@@ -1,6 +1,0 @@
-version: '3.8'
-services:
-  discord_elegia_bot:
-    image: vitalikon/discord-elegia-bot:latest
-    container_name: 'watchdog_core'
-    restart: on-failure

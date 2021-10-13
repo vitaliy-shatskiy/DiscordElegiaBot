@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordElegiaBot", "DiscordElegiaBot\DiscordElegiaBot.csproj", "{D49BD874-20E1-4EDD-A5CA-72CF65F6C112}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordElegiaBot.BLL", "DiscordElegiaBot.BLL\DiscordElegiaBot.BLL.csproj", "{F7DAAA1F-C4FF-4DE3-98EE-5A9187852951}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordElegiaBot.DAL", "DiscordElegiaBot.DAL\DiscordElegiaBot.DAL.csproj", "{38C30AFC-6549-4EC0-AD47-45D81BEA76C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordElegiaBot.Common", "DiscordElegiaBot.Common\DiscordElegiaBot.Common.csproj", "{2C359ECD-6DB8-4487-891E-F34BB7581635}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{D49BD874-20E1-4EDD-A5CA-72CF65F6C112}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49BD874-20E1-4EDD-A5CA-72CF65F6C112}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49BD874-20E1-4EDD-A5CA-72CF65F6C112}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7DAAA1F-C4FF-4DE3-98EE-5A9187852951}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7DAAA1F-C4FF-4DE3-98EE-5A9187852951}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7DAAA1F-C4FF-4DE3-98EE-5A9187852951}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7DAAA1F-C4FF-4DE3-98EE-5A9187852951}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38C30AFC-6549-4EC0-AD47-45D81BEA76C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38C30AFC-6549-4EC0-AD47-45D81BEA76C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38C30AFC-6549-4EC0-AD47-45D81BEA76C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38C30AFC-6549-4EC0-AD47-45D81BEA76C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C359ECD-6DB8-4487-891E-F34BB7581635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C359ECD-6DB8-4487-891E-F34BB7581635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C359ECD-6DB8-4487-891E-F34BB7581635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C359ECD-6DB8-4487-891E-F34BB7581635}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

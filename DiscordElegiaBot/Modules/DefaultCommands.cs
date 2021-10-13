@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using DiscordElegiaBot.Extensions;
+using DiscordElegiaBot.Common.Extensions;
 
 namespace DiscordElegiaBot.Modules
 {
@@ -17,6 +17,8 @@ namespace DiscordElegiaBot.Modules
             var sb = new StringBuilder();
 
             sb.AppendLine("**`ip`** - ip всех серверов Elegia. _(айпи, ип, сервера, servers)_\n");
+            sb.AppendLine("**`player [ник/steamId]`** - полная информация по игроку\n");
+            sb.AppendLine("**`top (score, kills, deaths, time)`** - топ 30 по категории\n");
             sb.AppendLine("**`site`** - сайт Elegia. _(сайт)_\n");
             sb.AppendLine(
                 "**`public`** - текущий список игроков на сервере \"PUBLIC | ELEGIA.CLUB\". _(2, pub)_\n");
@@ -25,12 +27,12 @@ namespace DiscordElegiaBot.Modules
             sb.AppendLine("**`demos`** - показать последние демки. _(dem, дем, демо, демка, demo, демки)_\n");
             sb.AppendLine("**`goodbye`** - попрощаться с ботом. _(пока, бб, сладких снов, bb)_\n");
             sb.AppendLine(
-                "**`ask`** - магический шар-предсказать, задайте вопрос шару и он ответит вам *правду*! " +
+                "**`ask [вопрос]`** - магический шар-предсказать, задайте вопрос шару и он ответит вам *правду*! " +
                 "После команды, через пробел задайте свой вопрос (-ask я дурак?). _(8ball, вопрос, шар)_\n");
-            sb.AppendLine("**`age`** - узнать дату создания аккаунта дискорд. " +
+            sb.AppendLine("**`age/age [@mydakoff]`** - узнать дату создания аккаунта дискорд. " +
                           "Так же если после команды упомянуть человека, вы увидите его дату создания. _(возраст)_\n");
             sb.AppendLine("**`coinflip`** - подкинуть монетку. _(flip, coin, cf, монетка)_\n");
-            sb.AppendLine("**`image`** - показать случайную картинку. " +
+            sb.AppendLine("**`image [название]`** - показать случайную картинку. " +
                           "После команды можно написать тему для поиска картинки, только на английском (-image ocean). _(картинка, picture, photo)_\n");
             sb.AppendLine("**`help`** - список доступных команд бота. _(хелп, помощь, ?, info, инфо)_\n");
             sb.AppendLine("**`null`** - ???\n");
@@ -145,7 +147,7 @@ namespace DiscordElegiaBot.Modules
         {
             var sb = new StringBuilder();
             Random random = new();
-            var replies = new List<string> {"Решка", "Орёл"};
+            var replies = new List<string> { "Решка", "Орёл" };
             var answer = replies[random.NextDouble() < 0.5 ? 0 : 1];
             var embed = new EmbedBuilder();
             switch (answer)

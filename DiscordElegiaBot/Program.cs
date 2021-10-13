@@ -3,8 +3,13 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordElegiaBot.Providers;
-using DiscordElegiaBot.Services;
+using DiscordElegiaBot.BLL.Providers;
+using DiscordElegiaBot.BLL.Services.Abstract;
+using DiscordElegiaBot.BLL.Services.ModuleServices;
+using DiscordElegiaBot.DAL.Database.Context;
+using DiscordElegiaBot.Services.Core;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -76,6 +81,13 @@ namespace DiscordElegiaBot
                 .AddScoped<RandomImageProvider>()
                 .AddScoped<ServerInfoProvider>()
                 .AddSingleton<LoggingService>()
+                .AddDbContext<MirageContext>(builder =>
+                {
+                    builder.UseMySql(_config.GetConnectionString("MirageContext"),
+                        new MySqlServerVersion(new Version(5, 7, 35)));
+                    builder.LogTo(Log.Logger.Debug, new[] { RelationalEventId.CommandExecuted });
+                })
+                .AddTransient<IUserService, UserService>()
                 .AddLogging(configure => configure.AddSerilog());
 
             if (!string.IsNullOrWhiteSpace(_logLevel))
