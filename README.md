@@ -1,6 +1,6 @@
 # DiscordElegiaBot
 Bot for Elegia discord server
-
+You can't use it if you don't have servers configured like in the Elegia project, you can just look at the code and maybe grab something for yourself.
 add config.json to application folder
 
 ```
